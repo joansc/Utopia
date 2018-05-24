@@ -1,4 +1,4 @@
-class AudioDevice 
+class AudioDevice
 {
   String label;
   int x, y, w, h;
@@ -44,4 +44,4 @@ class AudioDevice
   {
     return ( mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h );
   }
-} 
+}
