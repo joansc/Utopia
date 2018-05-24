@@ -1,7 +1,9 @@
-import ddf.minim.analysis.*;
 import ddf.minim.*;
-import javax.sound.sampled.*;
+import ddf.minim.analysis.*;
 import codeanticode.syphon.*;
+import processing.opengl.*;
+import javax.sound.sampled.*;
+
 
 Minim minim;
 AudioPlayer sample;
@@ -26,10 +28,14 @@ float xStep, yStep, xStepPrev, yStepPrev;
 float numStrips = 10;
 float numLeds = 60;
 
+ArrayList<Waves> waves = new ArrayList<Waves>();
+Leds leds;
+Led l;
+int numWaves = 15;
 
 void setup()
 {
-  size(displayWidth, 768, P3D);
+  size(1024, 768, P3D);
   textAlign(LEFT, TOP);
 
   xStep = width/numStrips;
@@ -58,10 +64,10 @@ void setup()
   for (int i = 0; i < numLines; i++)
   {    
     lines.add( new Behaviour( 0, 
-      int(random(0, height)), 
-      color( random(100, 200), 0, 100  ), 
-      color( 0, random(0, 200), 200 
-      )));
+                int(random(0, height)), 
+                color( random(100, 200), 0, 100  ), 
+                color( 0, random(0, 200), 200 
+                )));
   }
 
   minim = new Minim(this);
@@ -84,20 +90,34 @@ void setup()
   kickSize = snareSize = hatSize = 16;
   // make a new beat listener, so that we won't miss any buffers for the analysis
   bl = new BeatListener(beat, sample);
+  
+  for(int i=0; i< numWaves ; i++){
+     waves.add(new Waves(0, (i+1)* height/15, color(random(100,255),0, 255), color( 15, 245 , random( 120,255 )))  );
+  }
+  leds = new Leds();
+  l = new Led( 60, width/10, height/60, width/10*2);
 }
 
 void draw()
 {  
-  background(0);
-
+  //background(255);
+  main.beginDraw();
   pushStyle();
+  
+  for(Waves wave: waves){
+     wave.draw();
+  }
+  popStyle();
+  
+  // leds.draw();
+  main.endDraw();
+  /*pushStyle();
   for ( int i= 0; i < numLines; i++) {
     lines.get(i).draw();
   }
-  popStyle();
+  popStyle();*/
 
-  if (showPrevisualization)
-  {
+  if (showPrevisualization){
     Previsualization();
   } else {
     image(main, 0, 0);
@@ -107,7 +127,7 @@ void draw()
       drawGrid();
   }
 
-  //showAudioInSignal();
+  showAudioInSignal();
 
   if (showGUI) {
     for (int i = 0; i < mixerButtons.size(); ++i) { 
@@ -115,14 +135,14 @@ void draw()
     }
   }
 
-  server.sendScreen();
+ // server.sendScreen();
 }
 
 
 
 void mousePressed()
 {
-  for (int i = 0; i < mixerButtons.size()+1; ++i)
+  for (int i = 0; i < mixerButtons.size(); ++i)
   {
     if ( mixerButtons.get(i).mousePressed() )
     {

@@ -14,7 +14,7 @@ class Behaviour
   }
 
   public void draw(){  
-      main.beginDraw();
+
       main.background(0);
       main.strokeWeight(5);
       fx();
@@ -27,8 +27,7 @@ class Behaviour
         main.noStroke();
         main.rect( 0 , 0 , width , height );
       } 
-      
-      main.endDraw();
+  
   }
   
   public void fx(){ 
